@@ -1,0 +1,81 @@
+#include <stdio.h>
+#define N 19
+#include <stdlib.h> 
+#include <string.h> 
+int main()
+{
+	int A1[N];
+	int A2[N];
+	char n1[N];
+	char n2[N];
+
+	memset(n1,'\0',sizeof(n1));
+	memset(n2,'\0',sizeof(n2));
+	memset(A1,0,sizeof(A1));
+	memset(A2,0,sizeof(A2));		//初始化
+
+	scanf("%s %s",n1,n2);			//输入数据。
+	int len1=strlen(n1);
+	int len2=strlen(n2);
+	int maxlen=len1>len2?len1:len2; 		//记录最大是为了一会的相加
+ 
+	int k=0;
+
+	for(int i=N-len1;i<=N-1;i++)		//得到第一个加数，而且是倒着的，前面是0，最后一个计入第一个个位
+	{
+		A1[i]=n1[k++]-'0'; 			//倒着记录是因为，前面都是0，两个加数相加可以直接对应位相加，不需要移位
+	}
+	k=0;
+	for(int i=N-len2;i<=N-1;i++)		//得到第二个加数
+	{
+		A2[i]=n2[k++]-'0';
+	}
+	int i=N-1;				
+	int overflow=0;   //记录最高位（第19位）相加是否有溢出，如果有直接记录下来A1【i】是个两位数即可
+	
+
+	
+	for(;i>=N-maxlen-1;i--)	//这里用N-maxlen-1  又减个1是为了考虑进位情况，可以存放数位，如果没进位就会多个0，但后续有算法可以去掉这个0	
+	{
+		A1[i]+=A2[i]; 			//直接在A1上相加
+					//从个位开始加  0 1 2 3
+					//                         0 1 9
+		if (A1[i]>=10)		//需要进位
+		{
+			if (i-1<0)  	//特殊：当19位数+19位数而且所加的值大于10时，会溢出，那么用overflow记录，然后保持A1【0】的两位数（最大不过是18），输出的时候特别对待即可
+			{
+				overflow++;
+				break;
+			}
+			A1[i-1]+=1;   //前面那一位先加上1，最大不过是9+9，进1
+			A1[i]-=10;
+		}
+	}
+	if (overflow==0) 	//没溢出，正常输出即可，
+	{
+		int flag=1;
+		for(int j=i+1;j<N;j++)		
+		{						//i因为是i--，所以这里是j=i+1(原来刚结束的最大位),而且最大位如果是2+3这种不进位的，那么最大位是0，
+						//如果进位就是1，用flag就是为了判断最大位，然后A1【j】和0比就是去掉没进位，最大位是0的情况
+										//譬如1+2=3  i=18->i=17，两次，输出为03，所以用A1【j】==0来去掉0的输出即可
+			if (flag==1&&A1[j]==0) 
+			{
+				flag=0;
+				continue;
+			}
+			printf("%d",A1[j]);
+		}
+	printf("\n");
+	}
+	
+	
+	if (overflow==1)  		//有溢出，连着A【0】（最大两位）一起输出
+	{
+		for(int j=i;j<N;j++)
+	{
+		printf("%d",A1[j]);
+	}
+	printf("\n");
+	}
+ return 0;
+}

@@ -1,0 +1,33 @@
+#include <stdio.h>
+int main()
+{
+//禁用数组
+	int a,b,c;//  a/b  c是保留到小数点后几位
+	while(scanf("%d %d %d",&a,&b,&c)!=EOF)
+	{
+		int remain=a%b; 
+		for(int i=0;i<=c;i++)//你要c个小数，第0个我给你所有的整数part，其余的部分我一个个给你小数
+		{
+			if (i==0)//第一个，取整数part
+			printf("%d.",a/b);
+			else//其余一个一个取
+			{
+				if (i==c)//判断是不是要求的最后一位，要求四舍五入
+				{
+					if (((a%b)*10/b)>=5)//         如果余数*10/b>5说明下一位比5大，那么这一位需要+1显示
+						printf("%d",(a/b)+1);
+					else	//否则，正常输出最后一位
+					printf("%d",a/b); 
+					break;
+				 } 
+				printf("%d",a/b);	//取出小数位
+				remain=a%b; //得到余数，
+			}
+			a=remain*10;	//计算新的a
+		 } 
+		 printf("\n");	//最后倔强的换行，提交作业
+	}	
+	return 0;
+}
+
+

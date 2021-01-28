@@ -1,0 +1,158 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+float findprice(char s[]);
+int main()
+{
+	char storename[30];
+	char file[13][20];//最多有13行 
+	//strcpy(file[0],"        #1 MT Takeaway\n");
+	for(int i=0;i<13;i++)
+	{
+		memset(file[i],0,30); 
+	}
+	FILE *fp=fopen("data.txt","w+");//创建文件 
+	gets(storename);
+		char food[20];//20个字符 菜名 
+		int i=0; 
+		while(1)
+		{
+			gets(food);
+			if (strlen(food)==0) break;
+			strcpy(file[i],food);
+		//	fprintf("storedata.txt","%s",file[i]);
+			i++;
+		}
+		//上面是存入的内容 
+	//下面就是打印内容的部分 
+	printf("        #1 MT Takeaway\n");
+	printf("\n");//往文件里输入打印出来的内容
+	
+		//打印storename 
+		int length=strlen(storename)+2;
+		int linelength=(30-length)/2;
+		if (length%2)//奇数,右侧多一个 
+		{
+			for(int m=0;m<linelength;m++)
+			{
+				printf("-");
+			}
+			printf(" ");
+			printf("%s",storename);
+			printf(" ");
+			for(int m=0;m<=linelength;m++)
+			{
+				printf("-");
+			}	
+			printf("\n");
+		}
+		else
+		{
+			for(int m=0;m<linelength;m++)
+				printf("-");
+			printf(" ");
+			printf("%s",storename);
+			printf(" ");
+			for(int m=0;m<linelength;m++)
+				printf("-");
+			printf("\n");
+		} 
+	//现在 逐行打印文件内容 
+		
+		
+		
+		//至此，所有菜品输入已经存入2d arrary 
+		float total=0;
+		int number[2];
+		int num=0;
+
+		int j=0;
+		while(j<i)//问题所在点：“以文件输入结束” 为订单下单 
+		{ 
+			//用file[i]代替 
+			for(int i=strlen(file[j])-1;i>=strlen(file[j])-2;i--)
+			{
+				if (file[j][i]>='0'&&file[j][i]<='9')
+				number[strlen(file[j])-i-1]=file[j][i]-'0';
+				else
+				number[strlen(file[j])-i-1]=0;
+			}
+			num=number[0]+number[1]*10;//数量获取  num=2
+			
+			for(int i=0;i<20;i++)//输出前20个字符，把Sauteed lettuce输出,非单词部分置空格 
+			{
+				if (file[j][i]>='a'&&file[j][i]<='z'||file[j][i]>='A'&&file[j][i]<='Z')
+				putchar(file[j][i]);
+				else
+				putchar(' ');
+			}
+			//把菜品名称入文件
+			//food=Sauteed lettuce 2
+			//要获取Sauteed lettuce
+			char foodname[18]; 
+			memset(foodname,'\0',18); //清空，以免影响下次循环 
+			int i=0;
+			while(1)
+			{
+				if (file[j][i]==' '&&!(file[j][i+1]>='a'&&file[j][i+1]<='z'))
+					break;//Sauteed lettuce 2 直到lettuce之后的空格，停止循环 
+				else{
+					foodname[i]=file[j][i];
+				}
+				i++;
+			}//从此 foodname替代file[j]，仅作为菜名 
+			
+			float price=findprice(foodname);//获取菜的价格 
+			total+=price*num;//计算当前总价 
+			
+			printf("x");//将数量 打印送入文件 
+			if(num>9)
+			{
+				printf("%d",num);
+			}
+			else
+			{
+				printf("%d",num);
+				putchar(' ');
+			}
+			
+			printf("%-5.1f",num*price);//左对齐 ，菜总价 
+			printf("\n");
+			memset(food,' ',20);
+			j++;
+		}//循环结束，则全部变动信息向文件输入完毕 
+
+		printf("Delivery fees: 4\n");
+		printf("------------------------------\n");//表尾打印 
+		
+		for(int i=0;i<15;i++)
+		putchar(' ');
+		printf("Total:%-6.1f",total+4.0);
+//				fclose(fp); 
+
+	
+//	while(!feof(fp))
+//	{
+//		printf("进入循环\n");
+//		char string[31];
+//		fgets(string,31,fp);
+//		puts(string);
+//	}
+	
+	return 0;
+}
+float findprice(char s[])
+{
+	if (strcmp(s,"Dried bean curd")==0)
+		return 3.0;
+	else if (strcmp(s,"Potato")==0)
+		return 2.5;
+	else if (strcmp(s,"Sauteed lettuce")==0)
+		return 2.5;
+	else if (strcmp(s,"Rice")==0)
+		return 1.0;
+	else if (strcmp(s,"Lotus root soup")==0)
+		return 4.0;
+	else if (strcmp(s,"Fried beef pepper")==0)
+		return 7.0; 
+}

@@ -11,4 +11,5 @@ int main()
 	DONE:
 		printf("%d\t%d",a,b);
 		return 0;
+	//don't use this in noraml situation.
 }
